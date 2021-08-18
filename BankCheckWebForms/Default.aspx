@@ -49,16 +49,24 @@
         </div>
     </div>
     <asp:Panel ID="pnlCheckResult" Visible="false" runat="server">
-        <div class="m-3 border border-dark bg-success p-3">
+        <div class="m-3 border border-dark bg-info p-3">
             <div class="d-flex flex-nowrap pb-3">
-                <h2>Printed Bank Check</h2>
+                <h2>Bank Check Display</h2>
             </div>
-            <div class="d-flex flex-no-wrap">
-                Date:&nbsp;<asp:Label ID="lblDateIssued" CssClass="text-right" runat="server" />
+            <div class="d-flex flex-no-wrap justify-content-end mb-3">
+                <span class="mr-2">Date:</span><asp:Label ID="lblDateIssued" CssClass="border border-dark bg-light px-2 text-left" runat="server" />
             </div>
-            Pay to the Order of: <asp:Label ID="lblPayee" CssClass="text-left" runat="server" />
-            Amount: <asp:Label ID="lblNumericAmount" CssClass="text-right" runat="server" />
-            <asp:Label ID="lblTextAmount" CssClass="text-left" runat="server" />
+            <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex flex-nowrap w-100">
+                    <span class="mr-2" style="width: 180px !important;">Pay to the Order of:</span><asp:Label ID="lblPayee" CssClass="mr-2 border border-dark px-2 bg-light text-left w-100" runat="server" />
+                </div>
+                <div class="d-flex flex-nowrap">
+                    <span class="mr-2">Amount:</span><asp:Label ID="lblNumericAmount" CssClass="border border-dark px-2 bg-light text-right" runat="server" />
+                </div>
+            </div>
+            <div class="d-flex flex-nowrap mb-3 w-100">
+                <asp:Label ID="lblTextAmount" CssClass="mr-2 text-left w-100" runat="server" />
+            </div>
         </div>
     </asp:Panel>
 
