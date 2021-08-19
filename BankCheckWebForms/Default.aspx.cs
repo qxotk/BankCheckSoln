@@ -130,11 +130,14 @@ namespace BankCheckWebForms
                 messages.Add("Amount is not a valid decimal number.");
             }
 
-            int countDecimalPlaces = (inputAmount.Contains(".") ? inputAmount.Split('.')[1].Length : 0);
-            isValid &= (isValid && countDecimalPlaces == 2);
-            if (!isValid)
+            // Only check the number of decimal places when all other fields are valid.
+            if (isValid)
             {
-                messages.Add("Amount must be in Dollars and Cents, to exaclty 2 decimal places.");
+                int countDecimalPlaces = (inputAmount.Contains(".") ? inputAmount.Split('.')[1].Length : 0);
+                if (countDecimalPlaces != 2)
+                {
+                    messages.Add("Amount must be in Dollars and Cents, to exaclty 2 decimal places.");
+                }
             }
 
             return messages;
