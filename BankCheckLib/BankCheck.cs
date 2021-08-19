@@ -53,10 +53,10 @@ namespace BankCheckLib
 
         private string TranslateNumbersToText(long dollars)
         {
-            if (dollars == 0L)
-            {
-                return "";
-            }
+            //if (dollars == 0L)
+            //{
+            //    return "";
+            //}
 
             // 0 - 19
             if (dollars < 20L)
@@ -66,7 +66,8 @@ namespace BankCheckLib
             // 20 - 99
             if (dollars < 100L)
             {
-                return $"{MapTensFrom20To99[(int)(dollars / 10L)]}-{MapTo19[(int)(dollars % 10L)]}";
+                string dollarsOnesPlace = (dollars % 10 > 0) ? $"-{MapTo19[(int)(dollars % 10L)]}" : "";
+                return $"{MapTensFrom20To99[(int)(dollars / 10L)]}{dollarsOnesPlace}";
             }
             // 100 - 999
             if (dollars < 1000L)
