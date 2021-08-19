@@ -26,25 +26,28 @@ namespace BankCheckLib
                 return "No Dollars";
             }
 
-            string textDollars = TranslateNumbersToText(dollars); //digits.Aggregate<int, string>("", (a,b) => $"{a}{DigitTextMap[b]}-{PlaceText(b)}");
+            string textDollars = TranslateNumbersToText(dollars);
             return $"{textDollars} Dollars";
         }
 
         private string FormatCents(int cents)
         {
-            //return $"{DigitTextMap[cents]} Cents";
             if (cents == 0)
             {
                 return "No Cents";
             }
+
             if (cents < 20)
             {
                 return $"{MapTo19[cents]} Cents";
             }
+
             if (cents < 100)
             {
-                return $"{MapTensFrom20To99[cents / 10]}-{FormatCents(cents % 10)} Cents";
+                string centsOnesPlace = (cents % 10) > 0 ? $"-{MapTo19[cents % 10]}" : "";
+                return $"{MapTensFrom20To99[cents / 10]}{centsOnesPlace} Cents";
             }
+
             return "Too many cents";
         }
 
@@ -99,7 +102,6 @@ namespace BankCheckLib
             if (dollars < 1000000000L)
             {
                 return $"{TranslateNumbersToText(dollars / 1000000L)} {MapPowers[8]} {TranslateNumbersToText(dollars % 1000000L)}";
-                //return $"{TranslateNumbersToText(dollars / 1000000)} {MapPowers[8]} {TranslateNumbersToText(dollars % 1000000L)}";
             }
             // 1,000,000,000 - 19,000,000,000 : 1BB - 19BB
             if (dollars < 20000000000L)
@@ -109,29 +111,29 @@ namespace BankCheckLib
             // 20,000,000,000 - 99,000,000,000 : 20BB - 99BB
             if (dollars < 100000000000L)
             {
-                return $"{MapTensFrom20To99[(int)(dollars / 10000000L)]} {MapPowers[10]} {TranslateNumbersToText(dollars % 10000000L)}";
+                return $"{TranslateNumbersToText(dollars / 1000000000L)} {MapPowers[10]} {TranslateNumbersToText(dollars % 1000000000L)}";
             }
             // 100,000,000,000 - 999,000,000,000 : 100BB - 999BB
             if (dollars < 1000000000000L)
             {
-                return $"{TranslateNumbersToText(dollars / 1000000L)} {MapPowers[11]} {TranslateNumbersToText(dollars % 1000000L)}";
+                return $"{TranslateNumbersToText(dollars / 1000000000L)} {MapPowers[11]} {TranslateNumbersToText(dollars % 1000000000L)}";
             }
             // 1,000,000,000,000 - 19,000,000,000,000 : 1TT - 19TT
             if (dollars < 20000000000000L)
             {
-                return $"{MapTo19[(int)(dollars / 1000000000L)]} {MapPowers[9]} {TranslateNumbersToText(dollars % 1000000000L)}";
+                return $"{MapTo19[(int)(dollars / 1000000000000L)]} {MapPowers[12]} {TranslateNumbersToText(dollars % 1000000000000L)}";
             }
-            // 20,000,000,000 - 99,000,000,000 : 20BB - 99BB
+            // 20,000,000,000,000 - 99,000,000,000,000 : 20TT - 99TT
             if (dollars < 100000000000000L)
             {
-                return $"{MapTensFrom20To99[(int)(dollars / 10000000L)]} {MapPowers[10]} {TranslateNumbersToText(dollars % 10000000L)}";
+                return $"{TranslateNumbersToText(dollars / 1000000000000L)} {MapPowers[13]} {TranslateNumbersToText(dollars % 1000000000000L)}";
             }
-            // 100,000,000,000 - 999,000,000,000 : 100BB - 999BB
+            // 100,000,000,000,000 - 999,000,000,000,000 : 100TT - 999TT
             if (dollars < 1000000000000000L)
             {
-                return $"{TranslateNumbersToText(dollars / 1000000L)} {MapPowers[11]} {TranslateNumbersToText(dollars % 1000000L)}";
+                return $"{TranslateNumbersToText(dollars / 1000000000000L)} {MapPowers[13]} {TranslateNumbersToText(dollars % 1000000000000L)}";
             }
-            // 1,999,000,000,000 and Up - too  many dollars for us.
+            // 1,000,000,000,000,000 and Up - too  many dollars for us.
             return "Too Many";
         }
 
