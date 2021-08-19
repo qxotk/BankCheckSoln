@@ -19,10 +19,15 @@ namespace BankCheckWebForms
             }
         }
 
-        protected void btnViewCheck_Click(object sender, EventArgs e)
+        protected void btnDisplay_Click(object sender, EventArgs e)
         {
             ClearAlert();
-            List<string> errorMessages = ValidateForm();
+
+            // Validate form input
+            string inputPayee = txtCheckPayee.Text.Trim();
+            string inputDate = txtCheckIssueDate.Text.Trim();
+            string inputAmount = txtCheckAmount.Text.Trim();
+            List<string> errorMessages = ValidateForm(inputPayee, inputDate, inputAmount);
             if (errorMessages.Count > 0)
             {
                 lblAlert.Text = errorMessages.Aggregate((a, b) => a + "<br/>" + b);
@@ -30,10 +35,28 @@ namespace BankCheckWebForms
                 return;
             }
 
-            string payee = txtCheckPayee.Text.Trim();
-            DateTime issueDate = Convert.ToDateTime(txtCheckIssueDate.Text.Trim());
-            decimal amount = Convert.ToDecimal(txtCheckAmount.Text.Trim());
-            BankCheck bankCheck = new BankCheck(payee, issueDate, amount);
+            // Validate input values
+            string payee = inputPayee;
+            DateTime issueDate = DateTime.Parse(inputDate);
+            Decimal amount = decimal.Parse(inputAmount);
+            errorMessages = BankCheck.ValidateAttributes(payee, issueDate, amount);
+            if (errorMessages.Count > 0)
+            {
+                lblAlert.Text = errorMessages.Aggregate((a, b) => a + "<br/>" + b);
+                pnlAlert.Visible = true;
+                return;
+            }
+
+            // Acquire a new BankCheck
+            BankCheck bankCheck = BankCheck.CreateValidBankCheck(payee, issueDate, amount);
+            if (bankCheck == null)
+            {
+                lblAlert.Text = "Not able to create a bank check with the given input values.";
+                pnlAlert.Visible = true;
+                return;
+            }
+
+            // Render the bank check to the page.
             ShowPrintedCheck(bankCheck);
         }
 
@@ -48,7 +71,7 @@ namespace BankCheckWebForms
             txtCheckIssueDate.Text = "";
             txtCheckIssueDate.Attributes["min"] = DateTime.Today.Date.ToString("yyyy-MM-dd");
             txtCheckAmount.Text = "";
-            pnlCheckResult.Visible = false;
+            pnlBankCheckDisplay.Visible = false;
             ClearAlert();
         }
 
@@ -58,7 +81,7 @@ namespace BankCheckWebForms
             lblPayee.Text = check.PayeeName;
             lblNumericAmount.Text = check.Amount.ToString("c");
             lblTextAmount.Text = check.GetTextAmount();
-            pnlCheckResult.Visible = true;
+            pnlBankCheckDisplay.Visible = true;
         }
 
         protected void ClearAlert()
@@ -67,42 +90,53 @@ namespace BankCheckWebForms
             pnlAlert.Visible = false;
         }
 
-        protected List<string> ValidateForm()
+        protected List<string> ValidateForm(string inputPayee, string inputDate, string inputAmount)
         {
             bool isValid = true;
+
             List<string> messages = new List<string>();
-            isValid &= !String.IsNullOrEmpty(txtCheckPayee.Text.Trim());
+
+            // Validate Payee field.
+            isValid &= !String.IsNullOrEmpty(inputPayee);
             if (!isValid)
             {
                 messages.Add("Payee field is required.");
             }
-            isValid &= !String.IsNullOrEmpty(txtCheckIssueDate.Text.Trim());
+
+            // Validate Date field
+            isValid &= !String.IsNullOrEmpty(inputDate);
             if (!isValid)
             {
                 messages.Add("Date is required.");
             }
+
             DateTime issueDate;
-            isValid &= DateTime.TryParse(txtCheckIssueDate.Text.Trim(), out issueDate);
+            isValid &= DateTime.TryParse(inputDate, out issueDate);
             if (!isValid)
             {
                 messages.Add("Date is not a valid date.");
             }
-            isValid &= (isValid && issueDate >= DateTime.Today);
+
+            // Validate Amount field
+            isValid &= !String.IsNullOrEmpty(inputAmount);
             if (!isValid)
             {
-                messages.Add("Date must not be in the past.");
+                messages.Add("Amount is required.");
             }
-            decimal amount;
-            isValid = Decimal.TryParse(txtCheckAmount.Text.Trim(), out amount);
+
+            isValid &= (isValid && Decimal.TryParse(inputAmount, out _));
             if (!isValid)
             {
-                messages.Add("Amount is not a valid amount of money.");
+                messages.Add("Amount is not a valid decimal number.");
             }
-            isValid = (isValid && amount >= 0.01M);
+
+            int countDecimalPlaces = (inputAmount.Contains(".") ? inputAmount.Split('.')[1].Length : 0);
+            isValid &= (isValid && countDecimalPlaces == 2);
             if (!isValid)
             {
-                messages.Add("Amount must be more than $0.01.");
+                messages.Add("Amount must be in Dollars and Cents, to exaclty 2 decimal places.");
             }
+
             return messages;
         }
     }

@@ -8,6 +8,9 @@ namespace BankCheckLib
 {
     public class BankCheck
     {
+        public const Decimal MIN_VALID_AMOUNT = 0.01M; // One Cent
+        public const Decimal MAX_VALID_AMOUNT = 999999999999999.99M; // 999 Trillion, 999 Billion, 999 Million, 999 Thousand, 999 Dollars and 99 cents.
+
         public string PayeeName { get; private set; }
         public DateTime IssueDate { get; private set; }
         public decimal Amount { get; private set; }
@@ -17,6 +20,38 @@ namespace BankCheckLib
             int cents = Convert.ToInt32(Amount.ToString("#.00").Split('.')[1]);
             long dollars = Convert.ToInt64(decimal.Truncate(Amount));
             return $"{FormatDollars(dollars)} and {FormatCents(cents)}";
+        }
+
+        public static BankCheck CreateValidBankCheck(string payeeName, DateTime issueDate, Decimal amount)
+        {
+            List<string> errorMessage = ValidateAttributes(payeeName, issueDate, amount);
+            return errorMessage.Count == 0 ? new BankCheck(payeeName, issueDate, amount) : null;
+        }
+
+        public static List<string> ValidateAttributes(string payeeName, DateTime issueDate, Decimal amount)
+        {
+            List<string> errorMessages = new List<string>(3);
+            if (String.IsNullOrEmpty(payeeName))
+            {
+                errorMessages.Add("Payee Name must not be blank.");
+            }
+
+            if (issueDate < DateTime.Today)
+            {
+                errorMessages.Add("Check date may not be in the past.");
+            }
+
+            if (amount < MIN_VALID_AMOUNT)
+            {
+                errorMessages.Add("Check amount must be at least $0.01.");
+            }
+
+            if (amount > MAX_VALID_AMOUNT)
+            {
+                errorMessages.Add("Check amount exceeds the maximum amount of $999,999,999,999,999.99");
+            }
+
+            return errorMessages;
         }
 
         private string FormatDollars(long dollars)
@@ -53,11 +88,6 @@ namespace BankCheckLib
 
         private string TranslateNumbersToText(long dollars)
         {
-            //if (dollars == 0L)
-            //{
-            //    return "";
-            //}
-
             // 0 - 19
             if (dollars < 20L)
             {
@@ -194,7 +224,8 @@ namespace BankCheckLib
             {14, "Trillion" }
         };
 
-        public BankCheck(string payeeName, DateTime issueDate, Decimal amount)
+        // Private Contstructors - use public factory method so that properties can be validated on back end.
+        private BankCheck(string payeeName, DateTime issueDate, Decimal amount)
         {
             PayeeName = payeeName;
             IssueDate = issueDate;

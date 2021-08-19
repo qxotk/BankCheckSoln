@@ -15,6 +15,15 @@ namespace BankCheckWebForms
     {
 
         /// <summary>
+        /// pnlBankCheckEntry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlBankCheckEntry;
+
+        /// <summary>
         /// pnlAlert control.
         /// </summary>
         /// <remarks>
@@ -60,13 +69,13 @@ namespace BankCheckWebForms
         protected global::System.Web.UI.WebControls.TextBox txtCheckAmount;
 
         /// <summary>
-        /// btnViewCheck control.
+        /// btnDisplay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnViewCheck;
+        protected global::System.Web.UI.WebControls.Button btnDisplay;
 
         /// <summary>
         /// btnReset control.
@@ -78,13 +87,13 @@ namespace BankCheckWebForms
         protected global::System.Web.UI.WebControls.Button btnReset;
 
         /// <summary>
-        /// pnlCheckResult control.
+        /// pnlBankCheckDisplay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlCheckResult;
+        protected global::System.Web.UI.WebControls.Panel pnlBankCheckDisplay;
 
         /// <summary>
         /// lblDateIssued control.
