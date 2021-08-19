@@ -38,7 +38,6 @@
             </asp:ContentPlaceHolder>
             <hr />
             <footer>
-                <p>&copy; <%: DateTime.Now.Year %> Bank Check Sample App Guy - All Rights Reserved.</p>
             </footer>
         </div>
     </form>
